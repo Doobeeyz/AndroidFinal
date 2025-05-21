@@ -17,8 +17,10 @@ import com.example.androidfinal.ui.screens.HomeScreen
 import com.example.androidfinal.ui.screens.LoginScreen
 import com.example.androidfinal.ui.screens.RegistrationScreen
 import com.example.androidfinal.ui.theme.AndroidFinalTheme
+import com.example.androidfinal.ui.viewmodels.CommentViewModel
 import com.example.androidfinal.ui.viewmodels.HomeViewModel
 import com.example.androidfinal.ui.viewmodels.LoginViewModel
+import com.example.androidfinal.ui.viewmodels.PostViewModel
 import com.example.androidfinal.ui.viewmodels.RegistrationViewModel
 
 class MainActivity : ComponentActivity() {
@@ -28,13 +30,18 @@ class MainActivity : ComponentActivity() {
 
         // Получение экземпляра репозитория из Application класса
         val userRepository = (application as MyApplication).userRepository
+        val postRepository = (application as MyApplication).postRepository
+        val commentRepository = (application as MyApplication).commentRepository
+
 
         setContent {
             AndroidFinalTheme {
                 Scaffold { innerPadding ->
                     AppNavigation(
                         modifier = Modifier.padding(innerPadding),
-                        userRepository = userRepository
+                        userRepository = userRepository,
+                        postRepository = postRepository,
+                        commentRepository = commentRepository
                     )
                 }
             }
@@ -45,7 +52,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
-    userRepository: com.example.androidfinal.data.repository.UserRepository
+    userRepository: com.example.androidfinal.data.repository.UserRepository,
+    postRepository: com.example.androidfinal.data.repository.PostRepository,
+    commentRepository: com.example.androidfinal.data.repository.CommentRepository
 ) {
     // Создаем ViewModels с фабриками
     val registrationViewModel: RegistrationViewModel = viewModel(
@@ -57,8 +66,17 @@ fun AppNavigation(
     )
 
     val homeViewModel: HomeViewModel = viewModel(
-        factory = HomeViewModel.Factory(userRepository)
+        factory = HomeViewModel.Factory(userRepository, postRepository, commentRepository)
     )
+
+    val postViewModel: PostViewModel = viewModel(
+        factory = PostViewModel.Factory(postRepository)
+    )
+
+    val commentViewModel: CommentViewModel = viewModel(
+        factory = CommentViewModel.Factory(commentRepository)
+    )
+
 
     // Отслеживаем навигационное состояние
     var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
@@ -90,12 +108,15 @@ fun AppNavigation(
         is Screen.Home -> {
             HomeScreen(
                 viewModel = homeViewModel,
+                postViewModel = postViewModel,
+                commentViewModel = commentViewModel,
                 userId = screen.userId,
                 userEmail = screen.email,
                 onLogout = {
                     currentScreen = Screen.Login
                 }
             )
+
         }
     }
 }
