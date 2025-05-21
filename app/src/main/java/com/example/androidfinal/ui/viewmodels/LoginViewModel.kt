@@ -3,6 +3,7 @@ package com.example.androidfinal.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.androidfinal.data.models.User
 import com.example.androidfinal.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,10 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
                 }
 
                 // Проверяем пароль
-                if (user.password != password) {
+                val result = BCrypt.verifyer()
+                    .verify(password.toCharArray(), user.password.toCharArray())
+
+                if (!result.verified) {
                     _loginState.value = LoginState.Error("Неверный пароль")
                     return@launch
                 }
