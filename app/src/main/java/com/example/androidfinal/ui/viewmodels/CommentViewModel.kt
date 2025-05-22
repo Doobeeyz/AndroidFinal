@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class CommentViewModel(private val commentRepository: CommentRepository) : ViewModel() {
 
-    // Состояние комментариев для каждого поста отдельно
+
     private val _commentStates = MutableStateFlow<Map<Long, CommentState>>(emptyMap())
     val commentStates: StateFlow<Map<Long, CommentState>> = _commentStates
 
@@ -36,7 +36,7 @@ class CommentViewModel(private val commentRepository: CommentRepository) : ViewM
             updateCommentState(postId, CommentState.Loading)
             try {
                 commentRepository.insertComment(Comment(postId = postId, author = author, text = text))
-                loadComments(postId) // Перезагружаем комментарии для этого поста
+                loadComments(postId)
             } catch (e: Exception) {
                 updateCommentState(postId, CommentState.Error(e.message ?: "Ошибка добавления комментария"))
             }

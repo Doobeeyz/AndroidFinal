@@ -2,16 +2,12 @@ package com.example.androidfinal.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.androidfinal.ui.viewmodels.RegistrationViewModel
+
 
 @Composable
 fun RegistrationScreen(
@@ -26,10 +22,10 @@ fun RegistrationScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var formError by remember { mutableStateOf<String?>(null) }
 
-    // Наблюдаем состояние регистрации
+
     val registrationState by viewModel.registrationState.collectAsState()
 
-    // Эффект для обработки успешной регистрации
+
     LaunchedEffect(registrationState) {
         when (registrationState) {
             is com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Success -> {
@@ -170,7 +166,7 @@ fun RegistrationScreen(
             )
         )
 
-        // Отображение ошибок
+
         formError?.let {
             Text(
                 text = it,
@@ -179,7 +175,6 @@ fun RegistrationScreen(
             )
         }
 
-        // Отображение ошибок из ViewModel
         when (registrationState) {
             is com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Error -> {
                 Text(

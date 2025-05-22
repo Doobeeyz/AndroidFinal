@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.androidfinal.ui.screens.HomeScreen
 import com.example.androidfinal.ui.screens.LoginScreen
 import com.example.androidfinal.ui.screens.RegistrationScreen
+import com.example.androidfinal.ui.screens.UserProfileScreen
 import com.example.androidfinal.ui.theme.AndroidFinalTheme
 import com.example.androidfinal.ui.viewmodels.CommentViewModel
 import com.example.androidfinal.ui.viewmodels.HomeViewModel
@@ -55,7 +56,7 @@ fun AppNavigation(
     postRepository: com.example.androidfinal.data.repository.PostRepository,
     commentRepository: com.example.androidfinal.data.repository.CommentRepository
 ) {
-    // Создаем ViewModels с фабриками
+
     val registrationViewModel: RegistrationViewModel = viewModel(
         factory = RegistrationViewModel.Factory(userRepository)
     )
@@ -76,11 +77,27 @@ fun AppNavigation(
         factory = CommentViewModel.Factory(commentRepository)
     )
 
-    // Отслеживаем навигационное состояние
+
     var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
 
-    // Отображаем соответствующий экран
+
     when (val screen = currentScreen) {
+        is Screen.UserProfile -> {
+            UserProfileScreen(
+                userId = screen.userId,
+                postViewModel = postViewModel,
+                homeViewModel = homeViewModel,
+                commentViewModel = commentViewModel,
+                onBack = {
+                    currentScreen = Screen.Home(
+                        userId = (currentScreen as? Screen.Home)?.userId ?: 0L,
+                        email = (currentScreen as? Screen.Home)?.email ?: "",
+                        username = (currentScreen as? Screen.Home)?.username ?: ""
+                    )
+                }
+            )
+        }
+
         is Screen.Login -> {
             LoginScreen(
                 viewModel = loginViewModel,
@@ -112,15 +129,21 @@ fun AppNavigation(
                 userEmail = screen.email,
                 onLogout = {
                     currentScreen = Screen.Login
+                },
+                onUserClick = { clickedUserId ->
+                    currentScreen = Screen.UserProfile(clickedUserId)
                 }
             )
         }
+
     }
 }
 
-// Навигационные состояния
+
 sealed class Screen {
     object Login : Screen()
     object Registration : Screen()
     data class Home(val userId: Long, val email: String, val username: String) : Screen()
+    data class UserProfile(val userId: Long) : Screen()
+
 }

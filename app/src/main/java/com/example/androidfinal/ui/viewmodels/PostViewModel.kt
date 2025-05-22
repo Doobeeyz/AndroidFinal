@@ -45,7 +45,7 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
             _postState.value = PostState.Loading
             try {
                 postRepository.insertPost(Post(userId = userId, title = title, content = content))
-                loadPosts(userId) // обновляем после вставки
+                loadPosts(userId)
             } catch (e: Exception) {
                 _postState.value = PostState.Error(e.message ?: "Ошибка при создании поста")
             }

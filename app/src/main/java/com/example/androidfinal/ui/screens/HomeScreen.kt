@@ -22,9 +22,10 @@ fun HomeScreen(
     commentViewModel: CommentViewModel,
     userId: Long,
     userEmail: String,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onUserClick: (Long) -> Unit
 ) {
-    // Состояние текущей вкладки
+
     var selectedTab by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
@@ -87,13 +88,14 @@ fun HomeScreen(
             }
         }
     ) { innerPadding ->
-        // Отображаем экран в зависимости от выбранной вкладки
+
         when (selectedTab) {
             0 -> PostFeedScreen(
                 postViewModel = postViewModel,
                 commentViewModel = commentViewModel,
                 homeViewModel = viewModel,
                 currentUserId = userId,
+                onUserClick = onUserClick,
                 modifier = Modifier.padding(innerPadding)
             )
             1 -> CreatePostScreen(

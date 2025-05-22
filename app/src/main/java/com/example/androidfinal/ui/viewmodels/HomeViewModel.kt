@@ -17,16 +17,16 @@ private val postRepository: PostRepository,
 private val commentRepository: CommentRepository,
 ) : ViewModel() {
 
-    // Состояние данных пользователя
+
     private val _userState = MutableStateFlow<UserState>(UserState.Loading)
     val userState: StateFlow<UserState> = _userState
     private val _userNamesCache = mutableMapOf<Long, String>()
 
-    // Состояние всех постов
+
     private val _postState = MutableStateFlow<PostState>(PostState.Loading)
     val postState: StateFlow<PostState> = _postState
 
-    // Загрузка всех постов
+
     fun loadAllPosts() {
         viewModelScope.launch {
             try {
@@ -44,7 +44,7 @@ private val commentRepository: CommentRepository,
         }
     }
 
-    // Загрузка данных пользователя по ID
+
     fun loadUserById(userId: Long) {
         viewModelScope.launch {
             try {
@@ -78,7 +78,7 @@ private val commentRepository: CommentRepository,
         _userState.value = UserState.Idle
     }
 
-    // Загрузка пользователя по email
+
     fun loadUserByEmail(email: String) {
         viewModelScope.launch {
             try {
@@ -96,7 +96,17 @@ private val commentRepository: CommentRepository,
         }
     }
 
-    // Состояния пользователя
+    fun getPostsByUser(userId: Long): List<com.example.androidfinal.data.models.Post> {
+        val state = _postState.value
+        return if (state is PostState.Success) {
+            state.posts.filter { it.userId == userId }
+        } else {
+            emptyList()
+        }
+    }
+
+
+
     sealed class UserState {
         object Idle : UserState()
         object Loading : UserState()
@@ -104,7 +114,7 @@ private val commentRepository: CommentRepository,
         data class Error(val message: String) : UserState()
     }
 
-    // Состояния постов
+
     sealed class PostState {
         object Loading : PostState()
         object Empty : PostState()
@@ -112,7 +122,7 @@ private val commentRepository: CommentRepository,
         data class Error(val message: String) : PostState()
     }
 
-    // Factory
+
     class Factory(
         private val userRepository: UserRepository,
         private val postRepository: PostRepository,

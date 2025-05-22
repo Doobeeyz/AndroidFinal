@@ -2,16 +2,11 @@ package com.example.androidfinal.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.androidfinal.ui.viewmodels.LoginViewModel
 
 @Composable
 fun LoginScreen(
@@ -23,10 +18,10 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var formError by remember { mutableStateOf<String?>(null) }
 
-    // Наблюдаем состояние входа
+
     val loginState by viewModel.loginState.collectAsState()
 
-    // Эффект для обработки успешного входа
+
     LaunchedEffect(loginState) {
         when (loginState) {
             is com.example.androidfinal.ui.viewmodels.LoginViewModel.LoginState.Success -> {
@@ -100,7 +95,7 @@ fun LoginScreen(
             )
         )
 
-        // Отображение ошибок
+
         formError?.let {
             Text(
                 text = it,
@@ -151,7 +146,7 @@ fun LoginScreen(
     }
 }
 
-// Функция для валидации email
+
 private fun isValidEmail(email: String): Boolean {
     val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
     return emailRegex.matches(email)

@@ -12,7 +12,6 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 
 class RegistrationViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    // Состояния для UI
     private val _registrationState = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
     val registrationState: StateFlow<RegistrationState> = _registrationState
 
@@ -21,14 +20,14 @@ class RegistrationViewModel(private val userRepository: UserRepository) : ViewMo
             try {
                 _registrationState.value = RegistrationState.Loading
 
-                // Проверяем, существует ли пользователь с таким email
+
                 val existingUser = userRepository.getUserByEmail(email)
                 if (existingUser != null) {
                     _registrationState.value = RegistrationState.Error("Пользователь с таким email уже существует")
                     return@launch
                 }
 
-                // создаем и сохраняем нового пользователя
+
                 val newUser = User(
                     username = username,
                     email = email,
