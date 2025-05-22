@@ -14,12 +14,13 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
 private val userRepository: UserRepository,
 private val postRepository: PostRepository,
-private val commentRepository: CommentRepository
+private val commentRepository: CommentRepository,
 ) : ViewModel() {
 
     // Состояние данных пользователя
     private val _userState = MutableStateFlow<UserState>(UserState.Loading)
     val userState: StateFlow<UserState> = _userState
+    private val _userNamesCache = mutableMapOf<Long, String>()
 
     // Состояние всех постов
     private val _postState = MutableStateFlow<PostState>(PostState.Loading)
@@ -60,6 +61,22 @@ private val commentRepository: CommentRepository
             }
         }
     }
+    suspend fun getUserName(userId: Long): String {
+        _userNamesCache[userId]?.let { return it }
+
+        return try {
+            val user = userRepository.getUserById(userId)
+            val userName = user?.username ?: "Неизвестный пользователь"
+            _userNamesCache[userId] = userName
+            userName
+        } catch (e: Exception) {
+            "Неизвестный пользователь"
+        }
+    }
+
+    fun resetState() {
+        _userState.value = UserState.Idle
+    }
 
     // Загрузка пользователя по email
     fun loadUserByEmail(email: String) {
@@ -81,6 +98,7 @@ private val commentRepository: CommentRepository
 
     // Состояния пользователя
     sealed class UserState {
+        object Idle : UserState()
         object Loading : UserState()
         data class Success(val user: User) : UserState()
         data class Error(val message: String) : UserState()

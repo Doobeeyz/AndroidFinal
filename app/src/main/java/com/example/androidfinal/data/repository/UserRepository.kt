@@ -29,4 +29,5 @@ class UserRepository(private val userDao: UserDao) {
     fun getAllUsers(): Flow<List<User>> {
         return userDao.getAllUsers()
     }
+
 }

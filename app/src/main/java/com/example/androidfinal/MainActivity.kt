@@ -33,7 +33,6 @@ class MainActivity : ComponentActivity() {
         val postRepository = (application as MyApplication).postRepository
         val commentRepository = (application as MyApplication).commentRepository
 
-
         setContent {
             AndroidFinalTheme {
                 Scaffold { innerPadding ->
@@ -77,7 +76,6 @@ fun AppNavigation(
         factory = CommentViewModel.Factory(commentRepository)
     )
 
-
     // Отслеживаем навигационное состояние
     var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
 
@@ -116,7 +114,6 @@ fun AppNavigation(
                     currentScreen = Screen.Login
                 }
             )
-
         }
     }
 }

@@ -11,35 +11,46 @@ import kotlinx.coroutines.launch
 
 class CommentViewModel(private val commentRepository: CommentRepository) : ViewModel() {
 
-    private val _commentState = MutableStateFlow<CommentState>(CommentState.Idle)
-    val commentState: StateFlow<CommentState> = _commentState
+    // Состояние комментариев для каждого поста отдельно
+    private val _commentStates = MutableStateFlow<Map<Long, CommentState>>(emptyMap())
+    val commentStates: StateFlow<Map<Long, CommentState>> = _commentStates
+
+    fun getCommentsForPost(postId: Long): CommentState {
+        return _commentStates.value[postId] ?: CommentState.Idle
+    }
 
     fun loadComments(postId: Long) {
         viewModelScope.launch {
-            _commentState.value = CommentState.Loading
+            updateCommentState(postId, CommentState.Loading)
             try {
                 val comments = commentRepository.getCommentsByPost(postId)
-                _commentState.value = CommentState.Success(comments)
+                updateCommentState(postId, CommentState.Success(comments))
             } catch (e: Exception) {
-                _commentState.value = CommentState.Error(e.message ?: "Ошибка загрузки комментариев")
+                updateCommentState(postId, CommentState.Error(e.message ?: "Ошибка загрузки комментариев"))
             }
         }
     }
 
     fun addComment(postId: Long, author: String, text: String) {
         viewModelScope.launch {
-            _commentState.value = CommentState.Loading
+            updateCommentState(postId, CommentState.Loading)
             try {
                 commentRepository.insertComment(Comment(postId = postId, author = author, text = text))
-                loadComments(postId)
+                loadComments(postId) // Перезагружаем комментарии для этого поста
             } catch (e: Exception) {
-                _commentState.value = CommentState.Error(e.message ?: "Ошибка добавления комментария")
+                updateCommentState(postId, CommentState.Error(e.message ?: "Ошибка добавления комментария"))
             }
         }
     }
 
-    fun resetState() {
-        _commentState.value = CommentState.Idle
+    private fun updateCommentState(postId: Long, newState: CommentState) {
+        val currentStates = _commentStates.value.toMutableMap()
+        currentStates[postId] = newState
+        _commentStates.value = currentStates
+    }
+
+    fun resetState(postId: Long) {
+        updateCommentState(postId, CommentState.Idle)
     }
 
     sealed class CommentState {

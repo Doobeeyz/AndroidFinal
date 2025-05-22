@@ -1,11 +1,13 @@
 package com.example.androidfinal.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -13,7 +15,7 @@ import com.example.androidfinal.ui.viewmodels.RegistrationViewModel
 
 @Composable
 fun RegistrationScreen(
-    viewModel: RegistrationViewModel,
+    viewModel: com.example.androidfinal.ui.viewmodels.RegistrationViewModel,
     onRegistrationSuccess: (userId: Long, email: String, username: String) -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
@@ -30,13 +32,13 @@ fun RegistrationScreen(
     // Эффект для обработки успешной регистрации
     LaunchedEffect(registrationState) {
         when (registrationState) {
-            is RegistrationViewModel.RegistrationState.Success -> {
-                val state = registrationState as RegistrationViewModel.RegistrationState.Success
+            is com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Success -> {
+                val state = registrationState as com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Success
                 onRegistrationSuccess(state.userId, state.email, state.username)
                 viewModel.resetState()
             }
-            is RegistrationViewModel.RegistrationState.Error -> {
-                formError = (registrationState as RegistrationViewModel.RegistrationState.Error).message
+            is com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Error -> {
+                formError = (registrationState as com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Error).message
             }
             else -> {}
         }
@@ -45,13 +47,15 @@ fun RegistrationScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
         Text(
             text = "Регистрация",
             style = MaterialTheme.typography.headlineMedium,
+            color = Color.Black,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -63,8 +67,19 @@ fun RegistrationScreen(
             },
             label = { Text("Имя пользователя") },
             modifier = Modifier.fillMaxWidth(),
-            isError = username.isBlank() && formError != null
+            isError = username.isBlank() && formError != null,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLabelColor = Color.Gray,
+                unfocusedLabelColor = Color.Gray,
+                focusedBorderColor = Color(0xFF2A4174),
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = Color.Black
+            )
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = email,
@@ -74,9 +89,20 @@ fun RegistrationScreen(
             },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            isError = email.isBlank() && formError != null
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Email),
+            isError = email.isBlank() && formError != null,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLabelColor = Color.Gray,
+                unfocusedLabelColor = Color.Gray,
+                focusedBorderColor = Color(0xFF2A4174),
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = Color.Black
+            )
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = birthdate,
@@ -86,8 +112,19 @@ fun RegistrationScreen(
             },
             label = { Text("Дата рождения (напр. 2000-01-01)") },
             modifier = Modifier.fillMaxWidth(),
-            isError = birthdate.isBlank() && formError != null
+            isError = birthdate.isBlank() && formError != null,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLabelColor = Color.Gray,
+                unfocusedLabelColor = Color.Gray,
+                focusedBorderColor = Color(0xFF2A4174),
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = Color.Black
+            )
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = password,
@@ -96,10 +133,21 @@ fun RegistrationScreen(
                 formError = null
             },
             label = { Text("Пароль") },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
-            isError = password.isBlank() && formError != null
+            isError = password.isBlank() && formError != null,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLabelColor = Color.Gray,
+                unfocusedLabelColor = Color.Gray,
+                focusedBorderColor = Color(0xFF2A4174),
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = Color.Black
+            )
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = confirmPassword,
@@ -108,9 +156,18 @@ fun RegistrationScreen(
                 formError = null
             },
             label = { Text("Подтвердите пароль") },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
-            isError = password != confirmPassword && formError != null
+            isError = password != confirmPassword && formError != null,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedLabelColor = Color.Gray,
+                unfocusedLabelColor = Color.Gray,
+                focusedBorderColor = Color(0xFF2A4174),
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = Color.Black
+            )
         )
 
         // Отображение ошибок
@@ -124,9 +181,9 @@ fun RegistrationScreen(
 
         // Отображение ошибок из ViewModel
         when (registrationState) {
-            is RegistrationViewModel.RegistrationState.Error -> {
+            is com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Error -> {
                 Text(
-                    text = (registrationState as RegistrationViewModel.RegistrationState.Error).message,
+                    text = (registrationState as com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Error).message,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -156,23 +213,27 @@ fun RegistrationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
-            enabled = registrationState !is RegistrationViewModel.RegistrationState.Loading
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2A4174)
+            ),
+            enabled = registrationState !is com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Loading
         ) {
-            if (registrationState is RegistrationViewModel.RegistrationState.Loading) {
+            if (registrationState is com.example.androidfinal.ui.viewmodels.RegistrationViewModel.RegistrationState.Loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = Color.White
                 )
             } else {
-                Text("Зарегистрироваться")
+                Text("Зарегистрироваться", color = Color.White)
             }
         }
+
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
             onClick = onNavigateToLogin
         ) {
-            Text("Уже есть аккаунт? Войти")
+            Text("Уже есть аккаунт? Войти", color = Color(0xFF2A4174))
         }
     }
 }
